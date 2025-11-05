@@ -73,8 +73,7 @@ export default function PreferencesForm() {
         const payload = { 
             email: user.email, 
             preferences: prefs,
-            location: currentLocation.trim(),
-            active: true
+            location: currentLocation.trim()
         };
         
         console.log('Saving payload:', payload);
