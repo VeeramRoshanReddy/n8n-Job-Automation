@@ -18,6 +18,7 @@ export default function PreferencesForm() {
     const [messageType, setMessageType] = useState('');
     const [newKeyword, setNewKeyword] = useState('');
     const [newLocation, setNewLocation] = useState('');
+    const [currentLocation, setCurrentLocation] = useState('');
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data }) => {
@@ -41,7 +42,7 @@ export default function PreferencesForm() {
         setLoading(true);
         const { data, error } = await supabase
             .from('users')
-            .select('preferences')
+            .select('preferences, location')
             .eq('email', email)
             .limit(1);
             
@@ -51,6 +52,7 @@ export default function PreferencesForm() {
             setMessageType('error');
         } else if (data && data.length) {
             setPrefs({ ...prefs, ...data[0].preferences });
+            setCurrentLocation(data[0].location || '');
         } else {
             // Create new user record with default preferences
             const { error: insertError } = await supabase
@@ -71,6 +73,7 @@ export default function PreferencesForm() {
         const payload = { 
             email: user.email, 
             preferences: prefs,
+            location: currentLocation,
             active: true
         };
         
@@ -155,6 +158,26 @@ export default function PreferencesForm() {
             <h2>🎯 Job Search Preferences</h2>
             <p>Customize your preferences to get the most relevant job recommendations delivered to your inbox.</p>
             
+            <div className="form-group">
+                <label>📍 Current Location City</label>
+                <input
+                    type="text"
+                    value={currentLocation}
+                    onChange={e => setCurrentLocation(e.target.value)}
+                    placeholder="Enter your current city..."
+                    style={{
+                        width: '100%',
+                        padding: '16px 20px',
+                        border: '2px solid rgba(255, 255, 255, 0.2)',
+                        borderRadius: '12px',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: 'var(--text-primary)',
+                        fontSize: '1rem',
+                        backdropFilter: 'blur(10px)'
+                    }}
+                />
+            </div>
+
             <div className="form-group">
                 <label>🔍 Job Keywords & Skills</label>
                 <div className="tag-input">
