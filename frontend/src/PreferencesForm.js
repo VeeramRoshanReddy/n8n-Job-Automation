@@ -73,19 +73,37 @@ export default function PreferencesForm() {
         const payload = { 
             email: user.email, 
             preferences: prefs,
-            location: currentLocation,
+            location: currentLocation.trim() || null,
             active: true
         };
         
+        console.log('Saving payload:', payload);
+        
         const { data, error } = await supabase
             .from('users')
-            .upsert(payload, { onConflict: 'email' })
+            .upsert(payload, { 
+                onConflict: 'email',
+                ignoreDuplicates: false
+            })
             .select();
             
         if (error) {
-            setMessage('Error saving preferences: ' + error.message);
+            console.error('Save error:', error);
+            console.error('Error details:', {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
+            });
+            setMessage('Error saving preferences: ' + error.message + (error.hint ? ' (' + error.hint + ')' : ''));
             setMessageType('error');
         } else {
+            console.log('Save successful:', data);
+            // Verify location was saved
+            if (data && data[0]) {
+                console.log('Saved location value:', data[0].location);
+                setCurrentLocation(data[0].location || '');
+            }
             setMessage('🎉 Preferences saved successfully! Your job matches will be updated.');
             setMessageType('success');
             setTimeout(() => setMessage(''), 4000);
