@@ -73,7 +73,7 @@ export default function PreferencesForm() {
         const payload = { 
             email: user.email, 
             preferences: prefs,
-            location: currentLocation.trim() || null,
+            location: currentLocation.trim(),
             active: true
         };
         
