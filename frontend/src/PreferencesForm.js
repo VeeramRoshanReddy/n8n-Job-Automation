@@ -5,9 +5,9 @@ import { supabase } from './supabaseClient';
 export default function PreferencesForm() {
     const [user, setUser] = useState(null);
     const [prefs, setPrefs] = useState({
-        keywords: ['software engineer', 'developer', 'programmer'],
-        locations: ['Bengaluru', 'Mumbai', 'Delhi'],
-        min_salary: 500000,
+        keywords: ['Software engineer', 'Developer', 'Programmer'],
+        locations: ['India'],
+        min_salary: 300000,
         experience_level: 'mid',
         job_type: 'full-time',
         remote_preference: 'hybrid'
